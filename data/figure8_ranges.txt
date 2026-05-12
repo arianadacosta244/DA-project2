@@ -1,0 +1,7 @@
+# Example from project description, Figure 8.
+# x's four ranges share lines and collapse into a single web; y is independent.
+y: 7+,8,9,10-
+x: 1+,2,3,4,7
+x: 7,8
+x: 8,9-
+x: 8,11,12,13-

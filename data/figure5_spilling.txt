@@ -1,0 +1,4 @@
+# Same data with 2 registers; the 'spilling' algorithm can resolve it by
+# committing one web to memory.
+registers: 2
+algorithm: spilling, 2
