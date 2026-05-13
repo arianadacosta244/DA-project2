@@ -1,7 +1,3 @@
-/**
- * @file Allocator.cpp
- * @brief Implementations for the four register-allocation strategies.
- */
 #include "Allocator.h"
 #include "InterferenceBuilder.h"
 
@@ -13,26 +9,15 @@
 
 namespace {
 
-/// Outcome of a single coloring attempt over a working copy of the graph.
 struct ColorAttempt {
     bool ok = false;
-    std::vector<int>  color;    ///< color[id] (-1 if not colored)
-    std::vector<bool> spilled;  ///< spilled[id]
+    std::vector<int>  color;
+    std::vector<bool> spilled;
 };
 
-/**
- * @brief One Chaitin pass: simplify-and-pop with up to @p spillBudget spills.
- *
- * Uses the @c active flag on @ref Vertex<int> to logically remove vertices,
- * and the @c color slot to record the assignment. The @c info field of each
- * vertex is the web id (0-based), so it doubles as a direct index into the
- * returned arrays.
- *
- * @complexity O(K · |V| · (|V| + |E|))
- */
 ColorAttempt chaitinPass(Graph<int> &g, int K, int spillBudget) {
     ColorAttempt res;
-    const int n = g.getNumVertex();
+    int n = g.getNumVertex();
     res.color.assign(n, -1);
     res.spilled.assign(n, false);
     if (K <= 0) return res;
@@ -65,7 +50,6 @@ ColorAttempt chaitinPass(Graph<int> &g, int K, int spillBudget) {
             --active;
             continue;
         }
-        // Stuck — every remaining vertex has degree ≥ K.
         if (spillsUsed >= spillBudget) return res;
         Vertex<int> *vic = pickHighDegree();
         if (!vic) return res;
@@ -75,7 +59,6 @@ ColorAttempt chaitinPass(Graph<int> &g, int K, int spillBudget) {
         --active;
     }
 
-    // Coloring phase — pop in LIFO order, pick smallest free color.
     while (!stack.empty()) {
         Vertex<int> *v = stack.back();
         stack.pop_back();
@@ -88,7 +71,7 @@ ColorAttempt chaitinPass(Graph<int> &g, int K, int spillBudget) {
         }
         int chosen = -1;
         for (int c = 0; c < K; ++c) if (!used[c]) { chosen = c; break; }
-        if (chosen < 0) return res;          // simplification invariant broken
+        if (chosen < 0) return res;
         v->setColor(chosen);
     }
 
@@ -97,14 +80,12 @@ ColorAttempt chaitinPass(Graph<int> &g, int K, int spillBudget) {
     return res;
 }
 
-/// Number of distinct colors actually used by a coloring (== #registers).
 int countColors(const std::vector<int> &color) {
     std::set<int> s;
     for (int c : color) if (c >= 0) s.insert(c);
     return static_cast<int>(s.size());
 }
 
-/// Compact a coloring so registers are numbered contiguously from 0.
 void compactColors(std::vector<int> &color) {
     std::vector<int> remap;
     for (int c : color) if (c >= 0 && std::find(remap.begin(), remap.end(), c) == remap.end())
@@ -117,7 +98,6 @@ void compactColors(std::vector<int> &color) {
     }
 }
 
-/// Common post-processing: pack registers and fill out the result struct.
 AllocResult finalize(std::vector<Web> webs,
                      std::vector<int>  color,
                      std::vector<bool> spilled,
@@ -144,15 +124,6 @@ AllocResult infeasible(std::vector<Web> webs, std::string note) {
     return r;
 }
 
-/**
- * @brief Split a web at every '+' marker (multiple definitions become
- *        independent sub-webs). Falls back to a midpoint cut if the web has
- *        a single definition point.
- *
- * The split is purely structural: each sub-web's last point gets a '-' marker
- * (so a register can be released between sub-webs) and each sub-web's first
- * point keeps the '+' marker (definition).
- */
 std::vector<Web> splitWeb(const Web &w) {
     std::vector<int> defs;
     for (std::size_t i = 0; i < w.points.size(); ++i)
@@ -160,7 +131,7 @@ std::vector<Web> splitWeb(const Web &w) {
 
     if (defs.size() < 2) {
         if (w.points.size() < 2) return {w};
-        const int mid = static_cast<int>(w.points.size()) / 2;
+        int mid = static_cast<int>(w.points.size()) / 2;
         Web a, b;
         a.variable = b.variable = w.variable;
         for (int i = 0; i < mid; ++i) a.points.push_back(w.points[i]);
@@ -172,8 +143,8 @@ std::vector<Web> splitWeb(const Web &w) {
 
     std::vector<Web> subs;
     for (std::size_t k = 0; k < defs.size(); ++k) {
-        const int start = defs[k];
-        const int end   = (k + 1 < defs.size()) ? defs[k + 1] : (int)w.points.size();
+        int start = defs[k];
+        int end   = (k + 1 < defs.size()) ? defs[k + 1] : (int)w.points.size();
         Web sub;
         sub.variable = w.variable;
         for (int i = start; i < end; ++i) sub.points.push_back(w.points[i]);
@@ -184,19 +155,14 @@ std::vector<Web> splitWeb(const Web &w) {
     return subs;
 }
 
-/// Re-id the web list 0..n-1 (call after splitting / reorganizing).
 void renumber(std::vector<Web> &webs) {
     for (int i = 0; i < (int)webs.size(); ++i) webs[i].id = i;
 }
 
-} // namespace
+}
 
-// ===========================================================================
-// T2.1 — basic
-// ===========================================================================
 AllocResult Allocator::basic(const std::vector<Web> &webs, int maxRegs) {
     auto g = InterferenceBuilder::build(webs);
-    // Search for minimum K in [1, maxRegs].
     for (int K = 1; K <= maxRegs; ++K) {
         auto a = chaitinPass(*g, K, 0);
         if (a.ok) {
@@ -208,12 +174,8 @@ AllocResult Allocator::basic(const std::vector<Web> &webs, int maxRegs) {
     return infeasible(webs, "basic: cannot color with " + std::to_string(maxRegs) + " register(s)");
 }
 
-// ===========================================================================
-// T2.2 — spilling
-// ===========================================================================
 AllocResult Allocator::spilling(const std::vector<Web> &webs, int maxRegs, int spillBudget) {
     auto g = InterferenceBuilder::build(webs);
-    // Grow the spill budget from 0 (= basic) up to the user's max.
     for (int spills = 0; spills <= spillBudget; ++spills) {
         for (int K = 1; K <= maxRegs; ++K) {
             auto a = chaitinPass(*g, K, spills);
@@ -230,9 +192,6 @@ AllocResult Allocator::spilling(const std::vector<Web> &webs, int maxRegs, int s
         "spilling: budget of " + std::to_string(spillBudget) + " not sufficient");
 }
 
-// ===========================================================================
-// T2.3 — splitting
-// ===========================================================================
 AllocResult Allocator::splitting(const std::vector<Web> &webs, int maxRegs, int splitBudget) {
     std::vector<Web> working = webs;
 
@@ -252,7 +211,6 @@ AllocResult Allocator::splitting(const std::vector<Web> &webs, int maxRegs, int 
 
     int splitsDone = 0;
     while (splitsDone < splitBudget) {
-        // Pick the web with the highest interference degree as the split candidate.
         auto g = InterferenceBuilder::build(working);
         int target = -1;
         int bestDeg = -1;
@@ -263,9 +221,8 @@ AllocResult Allocator::splitting(const std::vector<Web> &webs, int maxRegs, int 
         if (target < 0) break;
 
         auto subs = splitWeb(working[target]);
-        if (subs.size() < 2) break;  // can't split this web any further
+        if (subs.size() < 2) break;
 
-        // Replace working[target] with subs[0], append the rest.
         working[target] = subs[0];
         for (std::size_t k = 1; k < subs.size(); ++k) working.push_back(subs[k]);
         renumber(working);
@@ -282,18 +239,14 @@ AllocResult Allocator::splitting(const std::vector<Web> &webs, int maxRegs, int 
         "splitting: budget of " + std::to_string(splitBudget) + " not sufficient");
 }
 
-// ===========================================================================
-// T2.4 — free  (DSatur)
-// ===========================================================================
 AllocResult Allocator::freeStrategy(const std::vector<Web> &webs, int maxRegs) {
     auto g = InterferenceBuilder::build(webs);
-    const int n = g->getNumVertex();
+    int n = g->getNumVertex();
 
     for (int K = 1; K <= maxRegs; ++K) {
         g->resetState();
         bool ok = true;
         for (int step = 0; step < n; ++step) {
-            // Pick uncolored vertex with highest saturation; break ties by raw degree.
             Vertex<int> *best = nullptr;
             int bestSat = -1, bestDeg = -1;
             for (auto *v : g->getVertexSet()) {

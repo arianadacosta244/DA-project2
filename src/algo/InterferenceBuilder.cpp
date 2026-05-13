@@ -1,6 +1,3 @@
-/**
- * @file InterferenceBuilder.cpp
- */
 #include "InterferenceBuilder.h"
 
 std::unique_ptr<Graph<int>> InterferenceBuilder::build(const std::vector<Web> &webs) {

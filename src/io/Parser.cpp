@@ -1,7 +1,3 @@
-/**
- * @file Parser.cpp
- * @brief Text-file parsers for live ranges and the register/algorithm config.
- */
 #include "Parser.h"
 
 #include <algorithm>
@@ -12,14 +8,12 @@
 
 namespace {
 
-/// Trim leading + trailing ASCII whitespace in place.
 void trim(std::string &s) {
     auto notSpace = [](unsigned char c) { return !std::isspace(c); };
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), notSpace));
     s.erase(std::find_if(s.rbegin(), s.rend(), notSpace).base(), s.end());
 }
 
-/// True for blank or '#'-comment lines.
 bool isSkippable(const std::string &line) {
     for (char c : line) {
         if (std::isspace(static_cast<unsigned char>(c))) continue;
@@ -28,7 +22,6 @@ bool isSkippable(const std::string &line) {
     return true;
 }
 
-/// Parse a single "<line>[+|-]" token into a ProgramPoint.
 ProgramPoint parsePoint(std::string tok, const std::string &context) {
     trim(tok);
     if (tok.empty()) throw std::runtime_error("Empty program point in: " + context);
@@ -50,7 +43,7 @@ ProgramPoint parsePoint(std::string tok, const std::string &context) {
     }
 }
 
-} // namespace
+}
 
 std::vector<LiveRange> Parser::parseRanges(const std::string &filename) {
     std::ifstream in(filename);
@@ -63,7 +56,7 @@ std::vector<LiveRange> Parser::parseRanges(const std::string &filename) {
         ++lineNo;
         if (isSkippable(line)) continue;
 
-        const auto colon = line.find(':');
+        auto colon = line.find(':');
         if (colon == std::string::npos)
             throw std::runtime_error("Missing ':' in ranges file at line " + std::to_string(lineNo));
 
@@ -104,7 +97,7 @@ AllocatorConfig Parser::parseConfig(const std::string &filename) {
         ++lineNo;
         if (isSkippable(line)) continue;
 
-        const auto colon = line.find(':');
+        auto colon = line.find(':');
         if (colon == std::string::npos)
             throw std::runtime_error("Missing ':' in config at line " + std::to_string(lineNo));
         std::string key = line.substr(0, colon);
@@ -124,8 +117,7 @@ AllocatorConfig Parser::parseConfig(const std::string &filename) {
                 throw std::runtime_error("'registers' must be positive (line " + std::to_string(lineNo) + ")");
             sawRegisters = true;
         } else if (key == "algorithm") {
-            // val is "basic" | "spilling, N" | "splitting, N" | "free"
-            const auto comma = val.find(',');
+            auto comma = val.find(',');
             std::string name = (comma == std::string::npos) ? val : val.substr(0, comma);
             std::string param = (comma == std::string::npos) ? "" : val.substr(comma + 1);
             trim(name);
@@ -145,7 +137,6 @@ AllocatorConfig Parser::parseConfig(const std::string &filename) {
             }
             sawAlgorithm = true;
         }
-        // Unknown keys are ignored to keep the format extensible.
     }
     if (!sawRegisters) throw std::runtime_error("Config missing 'registers' directive");
     if (!sawAlgorithm) throw std::runtime_error("Config missing 'algorithm' directive");

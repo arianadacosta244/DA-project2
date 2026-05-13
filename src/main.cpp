@@ -1,19 +1,8 @@
-/**
- * @file main.cpp
- * @brief Entry point. Dispatches between batch and interactive modes.
- *
- * Batch mode:
- * @code
- *   regalloc -b <ranges.txt> <registers.txt> <allocation.txt>
- * @endcode
- *
- * Interactive mode (no flag): launches the menu in @ref Menu::run.
- */
-#include "Allocator.h"
-#include "Menu.h"
-#include "OutputWriter.h"
-#include "Parser.h"
-#include "Web.h"
+#include "algo/Allocator.h"
+#include "ui/Menu.h"
+#include "io/OutputWriter.h"
+#include "io/Parser.h"
+#include "core/Web.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -25,9 +14,9 @@ int runBatch(const std::string &rangesFile,
              const std::string &configFile,
              const std::string &outputFile) {
     try {
-        const auto ranges = Parser::parseRanges(rangesFile);
-        const auto cfg    = Parser::parseConfig(configFile);
-        const auto webs   = buildWebs(ranges);
+        auto ranges = Parser::parseRanges(rangesFile);
+        auto cfg    = Parser::parseConfig(configFile);
+        auto webs   = buildWebs(ranges);
 
         AllocResult res;
         if      (cfg.algorithm == "basic")     res = Allocator::basic(webs, cfg.registers);
@@ -57,12 +46,12 @@ void printUsage(const char *prog) {
               << "  " << prog << " -b <ranges> <registers> <output> # batch mode\n";
 }
 
-} // namespace
+}
 
 int main(int argc, char **argv) {
     if (argc == 1) return Menu::run();
 
-    const std::string a1 = argv[1];
+    std::string a1 = argv[1];
     if (a1 == "-h" || a1 == "--help") { printUsage(argv[0]); return 0; }
     if (a1 == "-b") {
         if (argc != 5) { printUsage(argv[0]); return 2; }

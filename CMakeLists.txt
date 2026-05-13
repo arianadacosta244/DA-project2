@@ -13,17 +13,16 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 
 add_executable(regalloc
     src/main.cpp
-    src/Web.cpp
-    src/Parser.cpp
-    src/InterferenceBuilder.cpp
-    src/Allocator.cpp
-    src/OutputWriter.cpp
-    src/Menu.cpp
+    src/core/Web.cpp
+    src/io/Parser.cpp
+    src/io/OutputWriter.cpp
+    src/algo/InterferenceBuilder.cpp
+    src/algo/Allocator.cpp
+    src/ui/Menu.cpp
 )
 
 target_include_directories(regalloc PRIVATE src)
 
-# Convenience: a `make doc` target if Doxygen is installed
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
     set(DOXY_IN  ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)

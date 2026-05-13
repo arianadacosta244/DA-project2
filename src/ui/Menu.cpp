@@ -1,15 +1,10 @@
-/**
- * @file Menu.cpp
- * @brief Interactive CLI tying together parsing, web construction, graph
- *        building, allocation, and output emission.
- */
 #include "Menu.h"
 
-#include "Allocator.h"
-#include "InterferenceBuilder.h"
-#include "OutputWriter.h"
-#include "Parser.h"
-#include "Web.h"
+#include "../algo/Allocator.h"
+#include "../algo/InterferenceBuilder.h"
+#include "../io/OutputWriter.h"
+#include "../io/Parser.h"
+#include "../core/Web.h"
 
 #include <iostream>
 #include <optional>
@@ -26,7 +21,7 @@ struct State {
 };
 
 void banner() {
-    std::cout << "\n=== Compiler Register Allocation Tool — DA 2026, Project 2 ===\n";
+    std::cout << "\n=== Compiler Register Allocation Tool ===\n";
 }
 
 void printMenu() {
@@ -137,7 +132,7 @@ void doSetOutput(State &st) {
     if (!f.empty()) st.outputFile = f;
 }
 
-} // namespace
+}
 
 int Menu::run() {
     banner();
