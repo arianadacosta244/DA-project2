@@ -13,7 +13,7 @@ SRC := src/main.cpp \
        src/ui/Menu.cpp
 
 OBJ := $(patsubst src/%.cpp,$(BUILD)/%.o,$(SRC))
-BIN := $(BUILD)/regalloc
+BIN := myProg
 
 all: $(BIN)
 

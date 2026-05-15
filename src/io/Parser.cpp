@@ -8,6 +8,18 @@
 
 namespace {
 
+std::ifstream openWithFallback(const std::string& filename, const std::string& fallbackDir) {
+    std::ifstream in(filename);
+    
+    // If opening directly fails, try the fallback directory
+    if (!in.is_open()) {
+        std::string fallbackPath = fallbackDir + "/" + filename;
+        in.open(fallbackPath);
+    }
+    
+    return in;
+}
+
 void trim(std::string &s) {
     auto notSpace = [](unsigned char c) { return !std::isspace(c); };
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), notSpace));
@@ -46,7 +58,7 @@ ProgramPoint parsePoint(std::string tok, const std::string &context) {
 }
 
 std::vector<LiveRange> Parser::parseRanges(const std::string &filename) {
-    std::ifstream in(filename);
+    std::ifstream in = openWithFallback(filename, "basic/ranges");
     if (!in) throw std::runtime_error("Cannot open ranges file: " + filename);
 
     std::vector<LiveRange> out;
@@ -84,7 +96,7 @@ std::vector<LiveRange> Parser::parseRanges(const std::string &filename) {
 }
 
 AllocatorConfig Parser::parseConfig(const std::string &filename) {
-    std::ifstream in(filename);
+    std::ifstream in = openWithFallback(filename, "basic/registers");
     if (!in) throw std::runtime_error("Cannot open config file: " + filename);
 
     AllocatorConfig cfg;
