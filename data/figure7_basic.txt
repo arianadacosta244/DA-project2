@@ -1,3 +1,0 @@
-# Configuration for the Figure 7 example, matching Figure 11 (basic, 2 regs).
-registers: 2
-algorithm: basic

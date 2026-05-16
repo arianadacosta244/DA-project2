@@ -6,6 +6,12 @@
 #include <sstream>
 #include <stdexcept>
 
+// Directory conventions expected by the project spec:
+//   live-range files     ->  basic/ranges/<filename>
+//   register/config files ->  basic/registers/<filename>
+static const std::string RANGES_DIR    = "basic/ranges/";
+static const std::string REGISTERS_DIR = "basic/registers/";
+
 namespace {
 
 std::ifstream openWithFallback(const std::string& filename, const std::string& fallbackDir) {
@@ -55,11 +61,17 @@ ProgramPoint parsePoint(std::string tok, const std::string &context) {
     }
 }
 
-}
+} // anonymous namespace
 
+// parseRanges -- reads from basic/ranges/<filename>
+// If caller passes a path with '/' already, use it directly.
 std::vector<LiveRange> Parser::parseRanges(const std::string &filename) {
-    std::ifstream in = openWithFallback(filename, "basic/ranges");
-    if (!in) throw std::runtime_error("Cannot open ranges file: " + filename);
+    std::string path = (filename.find('/') != std::string::npos)
+                        ? filename
+                        : RANGES_DIR + filename;
+
+    std::ifstream in(path);
+    if (!in) throw std::runtime_error("Cannot open ranges file: " + path);
 
     std::vector<LiveRange> out;
     std::string line;
@@ -95,9 +107,15 @@ std::vector<LiveRange> Parser::parseRanges(const std::string &filename) {
     return out;
 }
 
+// parseConfig -- reads from basic/registers/<filename>
+// If caller passes a path with '/' already, use it directly.
 AllocatorConfig Parser::parseConfig(const std::string &filename) {
-    std::ifstream in = openWithFallback(filename, "basic/registers");
-    if (!in) throw std::runtime_error("Cannot open config file: " + filename);
+    std::string path = (filename.find('/') != std::string::npos)
+                        ? filename
+                        : REGISTERS_DIR + filename;
+
+    std::ifstream in(path);
+    if (!in) throw std::runtime_error("Cannot open config file: " + path);
 
     AllocatorConfig cfg;
     bool sawRegisters = false;
@@ -112,6 +130,7 @@ AllocatorConfig Parser::parseConfig(const std::string &filename) {
         auto colon = line.find(':');
         if (colon == std::string::npos)
             throw std::runtime_error("Missing ':' in config at line " + std::to_string(lineNo));
+
         std::string key = line.substr(0, colon);
         std::string val = line.substr(colon + 1);
         trim(key);
@@ -128,17 +147,20 @@ AllocatorConfig Parser::parseConfig(const std::string &filename) {
             if (cfg.registers <= 0)
                 throw std::runtime_error("'registers' must be positive (line " + std::to_string(lineNo) + ")");
             sawRegisters = true;
+
         } else if (key == "algorithm") {
             auto comma = val.find(',');
-            std::string name = (comma == std::string::npos) ? val : val.substr(0, comma);
+            std::string name  = (comma == std::string::npos) ? val : val.substr(0, comma);
             std::string param = (comma == std::string::npos) ? "" : val.substr(comma + 1);
             trim(name);
             trim(param);
             std::transform(name.begin(), name.end(), name.begin(),
                            [](unsigned char c) { return std::tolower(c); });
+
             if (name != "basic" && name != "spilling" && name != "splitting" && name != "free")
                 throw std::runtime_error("Unknown algorithm '" + name + "'");
             cfg.algorithm = name;
+
             if (name == "spilling" || name == "splitting") {
                 if (param.empty())
                     throw std::runtime_error("'" + name + "' requires a numeric parameter");

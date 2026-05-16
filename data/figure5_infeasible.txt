@@ -1,4 +1,0 @@
-# Same data as figure5_ranges.txt, but only 2 registers available — produces
-# the "registers: 0 / M: webX" output of Figure 12 under the 'basic' algorithm.
-registers: 2
-algorithm: basic

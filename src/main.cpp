@@ -10,6 +10,8 @@
 
 namespace {
 
+// Batch mode: ./myProg -b ranges.txt registers.txt allocation.txt
+// Parser already prepends basic/ranges/ and basic/registers/ when no '/' found.
 int runBatch(const std::string &rangesFile,
              const std::string &configFile,
              const std::string &outputFile) {
@@ -28,12 +30,14 @@ int runBatch(const std::string &rangesFile,
             return 2;
         }
 
+        // Notes and warnings go to stderr so they don't pollute the output file
         std::cerr << res.note << '\n';
         if (!res.feasible)
             std::cerr << "WARNING: register assignment infeasible — all webs spilled to memory.\n";
 
         OutputWriter::writeToFile(outputFile, res);
         return res.feasible ? 0 : 1;
+
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << '\n';
         return 2;
@@ -42,21 +46,29 @@ int runBatch(const std::string &rangesFile,
 
 void printUsage(const char *prog) {
     std::cerr << "Usage:\n"
-              << "  " << prog << "                                  # interactive menu\n"
-              << "  " << prog << " -b <ranges> <registers> <output> # batch mode\n";
+              << "  " << prog << "\n"
+              << "        Interactive menu mode.\n"
+              << "        Range files:  basic/ranges/<file>\n"
+              << "        Config files: basic/registers/<file>\n\n"
+              << "  " << prog << " -b <ranges.txt> <registers.txt> <output.txt>\n"
+              << "        Batch mode.  Filenames only (no path) -> conventional dirs.\n"
+              << "        Full relative paths also accepted.\n";
 }
 
-}
+} // namespace
 
 int main(int argc, char **argv) {
+    // No arguments -> interactive menu
     if (argc == 1) return Menu::run();
 
     std::string a1 = argv[1];
     if (a1 == "-h" || a1 == "--help") { printUsage(argv[0]); return 0; }
+
     if (a1 == "-b") {
         if (argc != 5) { printUsage(argv[0]); return 2; }
         return runBatch(argv[2], argv[3], argv[4]);
     }
+
     printUsage(argv[0]);
     return 2;
 }
