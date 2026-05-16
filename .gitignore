@@ -1,0 +1,16 @@
+# Executável
+myProg
+
+# Output
+allocation.txt
+
+# Objetos compilados
+*.o
+
+# Tudo dentro de qualquer pasta build
+build/
+**/build/
+
+# Tudo dentro de qualquer pasta basic
+basic/
+**/basic/
