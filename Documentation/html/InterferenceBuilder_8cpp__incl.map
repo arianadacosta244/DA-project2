@@ -1,0 +1,21 @@
+<map id="src/algo/InterferenceBuilder.cpp" name="src/algo/InterferenceBuilder.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="175,5,403,31"/>
+<area shape="rect" id="Node000002" href="$InterferenceBuilder_8h.html" title=" " alt="" coords="210,79,369,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="292,31,292,65,287,65,287,31"/>
+<area shape="rect" id="Node000003" href="$Graph_8h.html" title=" " alt="" coords="89,152,207,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="268,106,184,148,182,143,265,102"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="213,225,275,251"/>
+<area shape="poly" id="edge10_Node000002_Node000006" title=" " alt="" coords="288,105,272,153,254,213,249,211,267,151,283,103"/>
+<area shape="rect" id="Node000007" href="$Web_8h.html" title=" " alt="" coords="281,152,388,177"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="299,103,322,139,318,142,295,106"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="412,152,489,177"/>
+<area shape="poly" id="edge9_Node000002_Node000009" title=" " alt="" coords="316,102,413,144,411,149,314,106"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,225,91,251"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="133,180,77,219,74,215,130,175"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="115,225,186,251"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="151,178,152,212,147,212,146,178"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="165,175,219,215,216,219,162,180"/>
+<area shape="poly" id="edge8_Node000007_Node000006" title=" " alt="" coords="322,179,271,219,268,214,318,175"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="305,225,364,251"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="337,178,337,212,332,212,332,178"/>
+</map>

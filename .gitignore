@@ -14,3 +14,7 @@ build/
 # Tudo dentro de qualquer pasta basic
 basic/
 **/basic/
+
+# Tudo dentro da pasta Documenation
+Documentation/
+

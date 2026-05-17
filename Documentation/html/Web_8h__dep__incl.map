@@ -1,0 +1,33 @@
+<map id="src/core/Web.h" name="src/core/Web.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="378,5,495,31"/>
+<area shape="rect" id="Node000002" href="$Allocator_8h.html" title=" " alt="" coords="181,79,327,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="396,38,285,81,283,76,394,33"/>
+<area shape="rect" id="Node000006" href="$main_8cpp.html" title=" " alt="" coords="5,225,111,251"/>
+<area shape="poly" id="edge18_Node000001_Node000006" title=" " alt="" coords="365,28,269,46,218,61,170,81,120,110,103,128,84,153,68,191,62,225,57,224,63,190,80,151,99,124,117,106,167,76,217,56,268,41,364,23"/>
+<area shape="rect" id="Node000007" href="$Menu_8cpp.html" title=" " alt="" coords="331,225,455,251"/>
+<area shape="poly" id="edge19_Node000001_Node000007" title=" " alt="" coords="416,42,403,60,393,80,384,120,384,161,392,225,387,226,378,162,379,119,387,78,398,57,412,39"/>
+<area shape="rect" id="Node000008" href="$InterferenceBuilder_8h.html" title=" " alt="" coords="402,79,615,104"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="460,39,499,77,495,80,457,43"/>
+<area shape="rect" id="Node000010" href="$Web_8cpp.html" title=" " alt="" coords="640,79,772,104"/>
+<area shape="poly" id="edge13_Node000001_Node000010" title=" " alt="" coords="494,32,663,76,662,81,492,37"/>
+<area shape="rect" id="Node000011" href="$Parser_8h.html" title=" " alt="" coords="893,152,1005,177"/>
+<area shape="poly" id="edge14_Node000001_Node000011" title=" " alt="" coords="510,23,640,40,713,56,786,76,828,93,869,113,932,149,929,154,867,118,826,98,784,81,712,61,639,46,509,28"/>
+<area shape="rect" id="Node000003" href="$Allocator_8cpp.html" title=" " alt="" coords="403,152,564,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="305,106,447,149,445,154,303,111"/>
+<area shape="rect" id="Node000004" href="$OutputWriter_8h.html" title=" " alt="" coords="120,152,276,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="238,117,209,154,205,150,234,113"/>
+<area shape="poly" id="edge7_Node000002_Node000006" title=" " alt="" coords="192,111,149,128,109,154,93,171,81,191,64,226,59,224,76,188,89,168,106,150,146,123,190,106"/>
+<area shape="poly" id="edge8_Node000002_Node000007" title=" " alt="" coords="277,112,383,223,380,227,273,116"/>
+<area shape="rect" id="Node000005" href="$OutputWriter_8cpp.html" title=" " alt="" coords="135,225,306,251"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="208,190,220,224,214,226,203,192"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="165,186,82,227,80,223,162,181"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="243,179,362,223,360,228,241,184"/>
+<area shape="poly" id="edge10_Node000008_Node000003" title=" " alt="" coords="502,118,490,153,485,151,497,116"/>
+<area shape="poly" id="edge12_Node000008_Node000007" title=" " alt="" coords="543,110,561,124,576,141,583,160,578,179,552,204,521,220,488,231,455,237,454,232,487,226,519,216,549,199,573,176,578,160,571,144,557,128,539,114"/>
+<area shape="rect" id="Node000009" href="$InterferenceBuilder_8cpp.html" title=" " alt="" coords="640,152,868,177"/>
+<area shape="poly" id="edge11_Node000008_Node000009" title=" " alt="" coords="562,105,715,149,714,154,560,110"/>
+<area shape="poly" id="edge16_Node000011_Node000006" title=" " alt="" coords="879,180,666,198,499,203,334,209,124,228,111,230,110,224,123,223,333,204,499,198,666,193,879,175"/>
+<area shape="poly" id="edge17_Node000011_Node000007" title=" " alt="" coords="879,180,641,211,455,233,454,227,640,206,879,175"/>
+<area shape="rect" id="Node000012" href="$Parser_8cpp.html" title=" " alt="" coords="885,225,1012,251"/>
+<area shape="poly" id="edge15_Node000011_Node000012" title=" " alt="" coords="951,191,951,225,946,225,946,191"/>
+</map>
