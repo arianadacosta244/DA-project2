@@ -14,18 +14,6 @@ static const std::string REGISTERS_DIR = "basic/registers/";
 
 namespace {
 
-std::ifstream openWithFallback(const std::string& filename, const std::string& fallbackDir) {
-    std::ifstream in(filename);
-    
-    // If opening directly fails, try the fallback directory
-    if (!in.is_open()) {
-        std::string fallbackPath = fallbackDir + "/" + filename;
-        in.open(fallbackPath);
-    }
-    
-    return in;
-}
-
 void trim(std::string &s) {
     auto notSpace = [](unsigned char c) { return !std::isspace(c); };
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), notSpace));

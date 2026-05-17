@@ -29,7 +29,12 @@ void OutputWriter::write(std::ostream &os, const AllocResult &result) {
 }
 
 void OutputWriter::writeToFile(const std::string &filename, const AllocResult &result) {
-    std::ofstream out(filename);
+    std::string targetPath = filename;
+    if (targetPath.find('/') == std::string::npos && targetPath.find('\\') == std::string::npos) {
+        targetPath = "basic/output/" + targetPath;
+    }
+
+    std::ofstream out(targetPath);
     if (!out) throw std::runtime_error("Cannot open output file: " + filename);
     write(out, result);
 }
